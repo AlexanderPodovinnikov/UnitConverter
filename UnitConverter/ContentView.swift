@@ -9,11 +9,19 @@ import SwiftUI
 
 struct ContentView: View {
     
-    let units: [UnitLength] = [.meters, .kilometers, .feet, .yards, .miles]
+    let conversions = ["Distance", "Mass", "Temperature", "Time"]
+    
+    let unitTypes = [
+        [UnitLength.meters, UnitLength.kilometers, UnitLength.feet, UnitLength.yards, UnitLength.miles],
+        [UnitMass.grams, UnitMass.kilograms, UnitMass.ounces, UnitMass.pounds],
+        [UnitTemperature.celsius, UnitTemperature.fahrenheit, UnitTemperature.kelvin],
+        [UnitDuration.hours, UnitDuration.minutes, UnitDuration.seconds]
+    ]
+    @State private var selectedUnits = 0
 
     @State private var inputValue: Double = 1
-    @State private var inputUnit = UnitLength.meters
-    @State private var outputUnit =  UnitLength.yards
+    @State private var inputUnit: Dimension = UnitLength.meters
+    @State private var outputUnit: Dimension =  UnitLength.yards
     
     var outputString: String {
         let inputMeasurment = Measurement(value: inputValue, unit: inputUnit)
@@ -33,13 +41,21 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             Form {
+                Section("Conversion") {
+                    Picker("Conversion", selection: $selectedUnits) {
+                        ForEach(0..<conversions.count, id: \.self) {
+                            Text(conversions[$0])
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                }
                 Section("Enter original value and unit") {
                     TextField("Input value", value: $inputValue, format: .number)
                         .keyboardType(.decimalPad)
                         .focused($inputIsFocused)
                     
                     Picker("Select: ", selection: $inputUnit) {
-                        ForEach(units, id:\.self) {
+                        ForEach(unitTypes[selectedUnits], id:\.self) {
                             Text(measurmentFormatter.string(from: $0))
                         }
                     }
@@ -47,7 +63,7 @@ struct ContentView: View {
                 }
                     Section {
                         Picker("Select: ", selection: $outputUnit) {
-                            ForEach(units, id:\.self) {
+                            ForEach(unitTypes[selectedUnits], id:\.self) {
                                 Text(measurmentFormatter.string(from: $0))
                             }
                         }
@@ -65,6 +81,11 @@ struct ContentView: View {
                         inputIsFocused = false
                     }
                 }
+            }
+            .onChange(of: selectedUnits) { newSelection in
+                let  units = unitTypes[newSelection]
+                inputUnit = units[0]
+                outputUnit = units[2]
             }
         }
     }
