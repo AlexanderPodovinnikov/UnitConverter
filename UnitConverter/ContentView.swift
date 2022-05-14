@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    let units: [UnitLength] = [.feet, .kilometers, .meters, .miles, .yards]
+    let units: [UnitLength] = [.meters, .kilometers, .feet, .yards, .miles]
 
     @State private var inputValue: Double = 1
     @State private var inputUnit = UnitLength.meters
