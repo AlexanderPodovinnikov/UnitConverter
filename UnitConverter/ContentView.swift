@@ -8,8 +8,8 @@
 import SwiftUI
 
 enum Measure: String, CaseIterable {
-    case meeters
-    case kilomeeters
+    case meters
+    case kilometers
     case feet
     case yards
     case miles
@@ -19,7 +19,7 @@ enum Measure: String, CaseIterable {
 struct ContentView: View {
 
     @State private var inputValue: Double = 1
-    @State private var inputUnit = Measure.meeters
+    @State private var inputUnit = Measure.meters
     @State private var outputUnit =  Measure.yards
     
     private var outputValue: Double {
@@ -79,9 +79,9 @@ struct ContentView: View {
     }
     func calculate(lenght baseValue: Double, in unit: Measure) -> Double {
         switch unit {
-        case .meeters:
+        case .meters:
             return baseValue
-        case .kilomeeters:
+        case .kilometers:
             return baseValue / 1000
         case .feet:
             return baseValue * 3.28084
@@ -95,9 +95,9 @@ struct ContentView: View {
     func convert(lengh input: Double, from: Measure, to unit: Measure) -> Double {
         let baseValue: Double
         switch from {
-        case .meeters:
+        case .meters:
             baseValue = input
-        case .kilomeeters:
+        case .kilometers:
             baseValue = input * 1000
         case .feet:
             baseValue = input / 3.28084
