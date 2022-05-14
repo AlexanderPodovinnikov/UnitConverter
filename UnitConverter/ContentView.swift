@@ -7,30 +7,24 @@
 
 import SwiftUI
 
-enum Measure: String, CaseIterable {
-    case meeters
-    case kilomeeters
-    case feet
-    case yards
-    case miles
-    //var id: String {self.rawValue}
-}
-
 struct ContentView: View {
+    
+    let units: [UnitLength] = [.feet, .kilometers, .meters, .miles, .yards]
 
     @State private var inputValue: Double = 1
-    @State private var inputUnit = Measure.meeters
-    @State private var outputUnit =  Measure.yards
+    @State private var inputUnit = UnitLength.meters
+    @State private var outputUnit =  UnitLength.yards
     
-    private var outputValue: Double {
-        convert(lengh: inputValue, from: inputUnit, to: outputUnit)
+    var outputString: String {
+        let inputMeasurment = Measurement(value: inputValue, unit: inputUnit)
+        let outputMeasurment = inputMeasurment.converted(to: outputUnit)
+        return measurmentFormatter.string(from: outputMeasurment)
     }
-    
-    let formatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 5
+ 
+    let measurmentFormatter: MeasurementFormatter = {
+        let formatter = MeasurementFormatter()
+        formatter.unitOptions = .providedUnit
+        formatter.unitStyle = .long
         return formatter
     }()
     
@@ -45,23 +39,20 @@ struct ContentView: View {
                         .focused($inputIsFocused)
                     
                     Picker("Select: ", selection: $inputUnit) {
-                        ForEach(Measure.allCases, id:\.self) {unit in
-                            
-                            Text(unit.rawValue)
+                        ForEach(units, id:\.self) {
+                            Text(measurmentFormatter.string(from: $0))
                         }
-                    
                     }
                     .pickerStyle(SegmentedPickerStyle())
                 }
                     Section {
                         Picker("Select: ", selection: $outputUnit) {
-                            ForEach(Measure.allCases, id:\.self) {unit in
-                                
-                                Text(unit.rawValue)
+                            ForEach(units, id:\.self) {
+                                Text(measurmentFormatter.string(from: $0))
                             }
                         }
                         .pickerStyle(SegmentedPickerStyle())
-                        Text("\(NSNumber(value: outputValue), formatter: formatter)")
+                        Text(outputString)
                     } header: {
                         Text("And choose unit to convert")
                     }
@@ -76,37 +67,6 @@ struct ContentView: View {
                 }
             }
         }
-    }
-    func calculate(lenght baseValue: Double, in unit: Measure) -> Double {
-        switch unit {
-        case .meeters:
-            return baseValue
-        case .kilomeeters:
-            return baseValue / 1000
-        case .feet:
-            return baseValue * 3.28084
-        case .yards:
-            return baseValue * 1.09361
-        case .miles:
-            return baseValue / 1609.34
-        }
-    }
-    
-    func convert(lengh input: Double, from: Measure, to unit: Measure) -> Double {
-        let baseValue: Double
-        switch from {
-        case .meeters:
-            baseValue = input
-        case .kilomeeters:
-            baseValue = input * 1000
-        case .feet:
-            baseValue = input / 3.28084
-        case .yards:
-            baseValue = input / 1.09361
-        case .miles:
-            baseValue = input * 1609.34
-        }
-        return calculate(lenght: baseValue, in: unit)
     }
 }
 
