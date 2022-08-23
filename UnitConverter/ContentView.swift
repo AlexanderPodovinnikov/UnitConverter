@@ -24,12 +24,12 @@ struct ContentView: View {
     @State private var outputUnit: Dimension =  UnitLength.yards
     
     var outputString: String {
-        let inputMeasurment = Measurement(value: inputValue, unit: inputUnit)
-        let outputMeasurment = inputMeasurment.converted(to: outputUnit)
-        return measurmentFormatter.string(from: outputMeasurment)
+        let inputMeasurement = Measurement(value: inputValue, unit: inputUnit)
+        let outputMeasurement = inputMeasurement.converted(to: outputUnit)
+        return measurementFormatter.string(from: outputMeasurement)
     }
  
-    let measurmentFormatter: MeasurementFormatter = {
+    let measurementFormatter: MeasurementFormatter = {
         let formatter = MeasurementFormatter()
         formatter.unitOptions = .providedUnit
         formatter.unitStyle = .long
@@ -56,7 +56,7 @@ struct ContentView: View {
                     
                     Picker("Select: ", selection: $inputUnit) {
                         ForEach(unitTypes[selectedUnits], id:\.self) {
-                            Text(measurmentFormatter.string(from: $0))
+                            Text(measurementFormatter.string(from: $0))
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
@@ -64,7 +64,7 @@ struct ContentView: View {
                     Section {
                         Picker("Select: ", selection: $outputUnit) {
                             ForEach(unitTypes[selectedUnits], id:\.self) {
-                                Text(measurmentFormatter.string(from: $0))
+                                Text(measurementFormatter.string(from: $0))
                             }
                         }
                         .pickerStyle(SegmentedPickerStyle())
